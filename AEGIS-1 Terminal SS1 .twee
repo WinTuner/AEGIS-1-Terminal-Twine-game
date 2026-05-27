@@ -1,0 +1,579 @@
+:: StoryTitle
+AEGIS-1 Terminal: Season 1 Complete
+
+:: StoryData
+{
+  "ifid": "13C4CFCA-812B-4F27-88B7-DD0F89AE4459",
+  "format": "SugarCube",
+  "format-version": "2.37.3",
+  "start": "Start",
+  "zoom": 1
+}
+
+:: StoryStylesheet [stylesheet]
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&display=swap');
+
+/* --- AEGIS-1 CYBERNETIC TEAL INTERFACE --- */
+body {
+  background-color: #010304;
+  /* เอฟเฟกต์เส้นสแกนเรดาร์คอมพิวเตอร์ยุคเก่า */
+  background-image: 
+    linear-gradient(rgba(16, 18, 18, 0) 50%, rgba(0, 0, 0, 0.3) 50%),
+    radial-gradient(circle, #05141c 0%, #010304 100%);
+  background-size: 100% 4px, 100% 100%;
+  color: #00f2ff; /* สีฟ้าเนออนอวกาศ */
+  font-family: 'Fira Code', 'Courier New', Courier, monospace;
+}
+
+#story {
+  max-width: 850px;
+  text-shadow: 0 0 6px rgba(0, 242, 255, 0.4);
+}
+
+/* ปรับแต่งเมนูบาร์ด้านซ้ายของ SugarCube (รองรับระบบเซฟของระบบ) */
+#ui-bar {
+  background-color: #030a0f;
+  border-right: 2px solid #00f2ff;
+  box-shadow: 5px 0 15px rgba(0,0,0,0.8);
+}
+
+#ui-bar-toggle, #ui-bar-history, #menu-core {
+  border-color: #00f2ff;
+}
+
+#menu li a {
+  color: #00f2ff;
+  border: 1px solid rgba(0, 242, 255, 0.3);
+  background: rgba(0, 242, 255, 0.03);
+}
+
+#menu li a:hover {
+  background: #00f2ff;
+  color: #000 !important;
+  box-shadow: 0 0 10px #00f2ff;
+}
+
+.sidebar-title {
+  color: #ffaa00;
+  font-weight: bold;
+  text-align: center;
+  border-bottom: 2px double #ffaa00;
+  padding-bottom: 8px;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  text-shadow: 0 0 8px rgba(255, 170, 0, 0.5);
+}
+
+/* --- SPACE GLASS HUD PANEL --- */
+.aegis-hud {
+  border: 2px solid #00f2ff;
+  background: rgba(2, 9, 12, 0.75);
+  padding: 15px;
+  margin-bottom: 30px;
+  border-radius: 4px;
+  box-shadow: inset 0 0 15px rgba(0, 242, 255, 0.2), 0 0 10px rgba(0, 242, 255, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.hud-monitor {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.hud-label {
+  color: #888;
+  font-weight: bold;
+}
+
+.hud-value {
+  color: #00f2ff;
+  font-weight: bold;
+  text-shadow: 0 0 5px #00f2ff;
+}
+
+/* --- EVIDENCE MATRIX DISPLAY --- */
+.matrix-log-container {
+  margin-top: 25px;
+  border: 1px dashed #00f2ff;
+  background: rgba(0,0,0,0.6);
+  padding: 12px;
+  border-radius: 4px;
+}
+
+.matrix-title {
+  font-size: 0.8rem;
+  color: #ffaa00;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+.matrix-item {
+  font-size: 0.8rem;
+  color: #00f2ff;
+  padding: 4px 0;
+  border-bottom: 1px solid rgba(0,242,255,0.15);
+}
+
+.aegis-title {
+  font-size: 1.5rem;
+  color: #ffaa00;
+  font-weight: bold;
+  border-bottom: 2px solid #ffaa00;
+  padding-bottom: 6px;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-shadow: 0 0 8px rgba(255, 170, 0, 0.5);
+}
+
+.critical-alert {
+  color: #ff3333;
+  text-shadow: 0 0 10px #ff3333;
+  font-weight: bold;
+}
+
+/* --- ANIMATION FILTERS --- */
+.terminal-blink {
+  animation: crtBlink 0.8s infinite alternate;
+}
+
+@keyframes crtBlink {
+  0% { opacity: 1; }
+  100% { opacity: 0.1; }
+}
+
+.terminal-rumble {
+  display: inline-block;
+  animation: hullShake 0.22s infinite;
+}
+
+@keyframes hullShake {
+  0% { transform: translate(1px, 1px); }
+  25% { transform: translate(-1px, -1px); }
+  50% { transform: translate(-1px, 1px); }
+  75% { transform: translate(1px, -1px); }
+  100% { transform: translate(0, 0); }
+}
+
+/* Command Line Interface Options */
+a {
+  color: #00f2ff !important;
+  font-weight: bold;
+  text-decoration: none;
+  display: inline-block;
+  padding: 4px 0;
+  transition: all 0.2s ease;
+}
+
+a::before {
+  content: ">> ";
+  color: #ffaa00;
+}
+
+a:hover {
+  color: #fff !important;
+  text-shadow: 0 0 10px #00f2ff, 0 0 20px #00f2ff;
+  transform: translateX(6px);
+}
+
+
+:: StoryInit
+<<set $O2 to 100>>
+<<set $sanity to 100>>
+<<set $evidenceLog to []>>
+<<set $hasKeycard to false>>
+<<set $ventOpen to false>>
+
+
+:: StoryCaption
+<div class="sidebar-title">VITAL TELEMETRY</div>
+<div style="font-size:0.75rem; color:#888; text-align:center; margin-bottom:10px;">
+Use the "Saves" menu below to commit state parameters to memory partitions.
+</div>
+
+
+:: Start
+<div class="aegis-hud">
+  <div class="hud-monitor"><span class="hud-label">LOCATION:</span> <span class="hud-value">CENTRAL JUNCTION</span></div>
+  <div class="hud-monitor"><span class="hud-label">🌬️ O2 SUPPLY:</span> <span class="hud-value"><<if $O2 lte 30>><span class="critical-alert"><<= $O2>>%</span><<else>><<= $O2>>%<</if>></span></div>
+  <div class="hud-monitor"><span class="hud-label">🧠 SANITY:</span> <span class="hud-value"><<if $sanity lte 40>><span class="critical-alert"><= $sanity>>%</span><<else>><<= $sanity>>%<</if>></span></div>
+</div>
+
+<div class="aegis-title">Central Hub Junction</div>
+You awaken on the grated floor plates of the **AEGIS-1 Junction**. Structural emergency patterns ripple across the terminal screens, washing the dark bulkheads in a cold, cyclical teal hue.
+
+A sharp mechanical alert echoes through your localized neural interface headset:
+<span class="critical-alert terminal-blink">[WARNING: SECTOR ATMOSPHERE VENTING INTERNALLY]</span>
+
+The station's primary infrastructure pathways diverge before you.
+
+* [[Ascend to the Command Bridge|Bridge]]
+* [[Investigate the Crew Quarters block|Quarters]]
+* [[Descend into the Life Support Grid|LifeSupport]]
+
+<<if $evidenceLog.length gt 0>>
+<div class="matrix-log-container">
+  <div class="matrix-title">📁 SECURE ARCHIVE FEED (CASE FILE: 24)</div>
+  <<for _i to 0; _i lt $evidenceLog.length; _i++>>
+    <div class="matrix-item">▪ <<print $evidenceLog[_i]>></div>
+  <</for>>
+</div>
+<</if>>
+
+
+:: Bridge
+<<set $O2 to $O2 - 10>>
+<<if $O2 lte 0>><<goto "GameOver_O2">><</if>>
+
+<div class="aegis-hud">
+  <div class="hud-monitor"><span class="hud-label">LOCATION:</span> <span class="hud-value">COMMAND BRIDGE</span></div>
+  <div class="hud-monitor"><span class="hud-label">🌬️ O2 SUPPLY:</span> <span class="hud-value"><<if $O2 lte 30>><span class="critical-alert"><= $O2>>%</span><<else>><<= $O2>>%<</if>></span></div>
+  <div class="hud-monitor"><span class="hud-label">🧠 SANITY:</span> <span class="hud-value"><= $sanity>>%</span></div>
+</div>
+
+<div class="aegis-title">Command Bridge</div>
+The massive structural viewports overlook the silent void of space. Frost has begun to etch geometric lattices over the glass. The main diagnostic deck hums with phantom background power.
+
+* [[Access the Main Computer terminal|Computer]]
+<<if $ventOpen>>* [[Squeeze through the unlocked Maintenance Vent|VentClimax]]<</if>>
+* [[Return to the Central Hub Junction|Start]]
+
+
+:: Quarters
+<<set $sanity to $sanity - 10>>
+<<if $sanity lte 0>><<goto "GameOver_Sanity">><</if>>
+
+<div class="aegis-hud">
+  <div class="hud-monitor"><span class="hud-label">LOCATION:</span> <span class="hud-value">CREW QUARTERS</span></div>
+  <div class="hud-monitor"><span class="hud-label">🌬️ O2 SUPPLY:</span> <span class="hud-value"><= $O2>>%</span></div>
+  <div class="hud-monitor"><span class="hud-label">🧠 SANITY:</span> <span class="hud-value"><<if $sanity lte 40>><span class="critical-alert"><= $sanity>>%</span><<else>><<= $sanity>>%<</if>></span></div>
+</div>
+
+<div class="aegis-title">Crew Quarters Matrix</div>
+The hallway is littered with hollow breathing apparatus lines and torn document sheets. The personal suites are dead silent, except for a low, repeating electronic signal chirping from deep within.
+
+* [[Enter the Captain's Cabin|CaptainCabin]]
+* [[Inspect the Chief Archivist's private desk|ArchivistDesk]]
+* [[Retreat to the Central Hub Junction|Start]]
+
+
+:: CaptainCabin
+<<set $O2 to $O2 - 5>>
+<<if $O2 lte 0>><<goto "GameOver_O2">><</if>>
+
+<div class="aegis-title">Captain's Stateroom</div>
+The space is freezing and entirely unpressurized. 
+
+<<if not $hasKeycard>>
+  A gold-rimmed physical credential token catches the amber hazard flash on the edge of the titanium desk.
+  <span style="color:#ffaa00;"><br>**[RECOVERY SUCCESSFUL: GOLD COMMAND KEYCARD OBTAINED]**</span>
+  <<set $hasKeycard to true>>
+<<else>>
+  The layout is cleared out and silent. The Captain's terminal frames read completely dark.
+<</if>>
+
+* [[Go back out to the Crew Quarters corridor|Quarters]]
+
+
+:: ArchivistDesk
+<<set $sanity to $sanity - 15>>
+<<if $sanity lte 0>><<goto "GameOver_Sanity">><</if>>
+
+<div class="aegis-title">Archivist Data Suite</div>
+<span class="terminal-rumble critical-alert">A strange, rhythmic metallic knocking beats behind the wall plating.</span> 
+
+The console on the archivist's desk is displaying a flickering file directory labeled **CASE FILE: 24**. The screen looks warm, covered in a weird, grease-like smudge.
+
+* [[Attempt to clone the Case File data packets|TerminalInvestigate]]
+* [[Step away from the desk and exit|Quarters]]
+
+
+:: LifeSupport
+<<set $O2 to $O2 - 15>>
+<<if $O2 lte 0>><<goto "GameOver_O2">><</if>>
+
+<div class="aegis-hud">
+  <div class="hud-monitor"><span class="hud-label">LOCATION:</span> <span class="hud-value">LIFE SUPPORT GRID</span></div>
+  <div class="hud-monitor"><span class="hud-label">🌬️ O2 SUPPLY:</span> <span class="hud-value"><span class="critical-alert"><= $O2>>%</span></span></div>
+  <div class="hud-monitor"><span class="hud-label">🧠 SANITY:</span> <span class="hud-value"><= $sanity>>%</span></div>
+</div>
+
+<div class="aegis-title">Life Support Grid</div>
+Thick plumes of freezing exhaust burst from the primary mixing valves, clouding your environmental helmet's line of sight.
+
+* [[Bypass the mixing assembly manual controls|ValveBypass]]
+* [[Check out the lower storage lockers|StorageLockers]]
+* [[Return to the Central Hub Junction|Start]]
+
+
+:: StorageLockers
+<div class="aegis-title">Lower Storage Lockers</div>
+<<set $O2 to $O2 - 5>>
+<<set $sanity to $sanity - 10>>
+<<if $O2 lte 0>><<goto "GameOver_O2">><</if>>
+<<if $sanity lte 0>><<goto "GameOver_Sanity">><</if>>
+
+You slide open the heavy locker hatches. Most contain corrupted utility drives and broken tools. In the last locker, you discover an old diagnostic tool scribbled with a code fragment: **0 2 4**.
+
+<<if not $evidenceLog.includes("Override Token: 024")>>
+  <<run $evidenceLog.push("Override Token: 024")>>
+  <span style="color:#00f2ff;"><br>[DATA SYNC]: Override Token 024 linked to system partitions.</span>
+<</if>>
+
+* [[Return to the Main Life Support Grid|LifeSupport]]
+
+
+:: Computer
+<div class="aegis-title">Main Computer Frame</div>
+<<set $O2 to $O2 - 5>>
+<<if $O2 lte 0>><<goto "GameOver_O2">><</if>>
+
+The computer layout demands an authenticated security token.
+
+<<if $hasKeycard>>
+  You swipe the Gold Command Keycard through the terminal reader. The red status lights blink to amber. Access granted to high-level schematic files!
+  
+  * [[Examine the station ventilation grid schematics|UnlockVents]]
+<<else>>
+  <span class="critical-alert">ACCESS DENIED: COMMAND ENTRY CLEARANCE LEVEL REQUIRED.</span>
+  
+  * [[Back out to the Command Bridge deck|Bridge]]
+<</if>>
+
+
+:: UnlockVents
+<div class="aegis-title">Station Schematic Matrix</div>
+<<type 20ms>>Opening utility bypass lines...
+De-activating secondary security lockouts...
+Maintenance vent circuits on the Bridge are now unsealed.<</type>>
+
+<<set $ventOpen to true>>
+<span style="color:#00f2ff;"><br>[SYSTEM MATRIX UPDATE]: Bridge Maintenance Vent system unlocked.</span>
+
+* [[Return to the Command Bridge deck|Bridge]]
+
+
+:: TerminalInvestigate
+<div class="aegis-title">Unknown Memory Feed</div>
+<<type 20ms>>Accessing encryption blocks... 
+Recompiling broken data arrays...
+Core string for Case File 24 identified.<</type>>
+
+The terminal lets out a high-pitched digital whine. You can force a deep query into the system nodes.
+
+* [[Run a full extraction on the restricted files|ArchivistTale]]
+* [[Bail out and retreat to the corridor|Quarters]]
+
+
+:: ArchivistTale
+<div class="aegis-title">The Archivist's Tale: Blueprint of Terror</div>
+<<set $sanity to $sanity - 15>>
+<<if $sanity lte 0>><<goto "GameOver_Sanity">><</if>>
+
+The archival files stream across your HUD layout like a torrent of broken, bleeding code lines:
+
+<<type 20ms>>PROJECT RECORD: CASE FILE 24. The artifact brought up from Sector 4 was not an inorganic construct. It reacts to conscious thoughts. It builds tangible, physical architecture out of thin air... drawing templates from our worst terrors.<</type>>
+
+<<if not $evidenceLog.includes("Case File 24: Terror Blueprint")>>
+    <<run $evidenceLog.push("Case File 24: Terror Blueprint")>>
+    <span class="critical-alert"><br>[DATA COMPILATION]: Case File 24 archived in sub-sectors.</span>
+<</if>>
+
+* [[Investigate the Deep Bio-Labs folder|BioLabsFolder]]
+* [[Disconnect and head out|Quarters]]
+
+
+:: BioLabsFolder
+<div class="aegis-title">Restricted Bio-Labs Data</div>
+<<set $sanity to $sanity - 10>>
+<<if $sanity lte 0>><<goto "GameOver_Sanity">><</if>>
+
+The folder displays layout blue-prints of a chamber situated right beneath the fuel lines. A notation from the Captain reads: *"The entity has escaped the tank. It is changing the structural layout of Sublevel 02."*
+
+<<if not $evidenceLog.includes("Bio-Lab Escape Vectors")>>
+  <<run $evidenceLog.push("Bio-Lab Escape Vectors")>>
+<</if>>
+
+* [[Head out to check the station networks|Quarters]]
+
+
+:: ValveBypass
+<div class="aegis-title">Atmospheric Valve Interface</div>
+<<set $O2 to $O2 - 10>>
+<<if $O2 lte 0>><<goto "GameOver_O2">><</if>>
+
+The console controlling the air scrubbers requires a high-priority diagnostic key code to execute an override.
+
+<<if $evidenceLog.includes("Override Token: 024")>>
+  You input code **024**. The main mechanical relays click open with a thunderous clank! Oxygen production ramps back up across the sector.
+  <<set $O2 to 100>>
+  <span style="color:#00f2ff;"><br>[SUCCESS]: Core oxygen loops fully re-pressurized to 100%.</span>
+  
+  * [[Proceed deeper toward the Main Reactor Subdeck|ReactorSubdeck]]
+<<else>>
+  The terminal refuses your raw input. You don't have the necessary override code digits to bypass the protocol.
+  
+  * [[Head back to the Main Life Support room|LifeSupport]]
+<</if>>
+
+
+:: ReactorSubdeck
+<div class="aegis-title">Main Reactor Subdeck</div>
+<<set $O2 to $O2 - 10>>
+<<set $sanity to $sanity - 10>>
+<<if $O2 lte 0>><<goto "GameOver_O2">><</if>>
+<<if $sanity lte 0>><<goto "GameOver_Sanity">><</if>>
+
+The reactor room is silent. The fuel rods aren't burning fuel—they are covered in a dark, tendril-like flesh weave that is draining the core's thermal energy into the floor structures.
+
+* [[Trace the roots down into the infrastructure|UnderGrid]]
+* [[Turn back to the central junction room|Start]]
+
+
+:: UnderGrid
+<div class="aegis-title">Infrastructure Pipes</div>
+<<set $O2 to $O2 - 15>>
+<<if $O2 lte 0>><<goto "GameOver_O2">><</if>>
+
+You crawl down into the maintenance pipes beneath the reactor. The layout changes dramatically. The round metal walls flatten out, morphing into dark, elegant wooden panels.
+
+* [[Keep moving deeper down the corridor|MansionHallway]]
+
+
+:: VentClimax
+<div class="aegis-title">Maintenance Vent Escape Route</div>
+<<set $O2 to $O2 - 10>>
+<<if $O2 lte 0>><<goto "GameOver_O2">><</if>>
+
+You crawl through the tight steel vents leading away from the Bridge deck. The hum of the space station slowly fades away, replaced by a bizarre, distant sound of wind rustling through dead tree branches.
+
+* [[Drop down through the vent exit hatch|MansionHallway]]
+
+
+:: MansionHallway
+<div class="aegis-title">The Mansion Manifestation</div>
+<<set $sanity to $sanity - 25>>
+<<if $sanity lte 0>><<goto "GameOver_Sanity">><</if>>
+
+The line between space station technology and historic earthly architecture is completely gone. You stand in an impossible, endless hallway made of old mahogany wood, lit by dim, flickering crystal chandeliers. 
+
+<span class="terminal-rumble critical-alert">The structure echoes with a hollow, mechanical heartbeat.</span>
+
+* [[Enter the study room at the end of the hall|WatchersChamber]]
+* [[Force your way through a metallic door seam|PodBay]]
+
+
+:: WatchersChamber
+<div class="aegis-title">The Watcher's Study</div>
+<<set $sanity to $sanity - 15>>
+<<if $sanity lte 0>><<goto "GameOver_Sanity">><</if>>
+
+Sitting at a desk inside the old study is a dry, preserved corpse wearing a corporate security uniform. A high-tech data core terminal sits balanced on top of the antique wooden desk.
+
+* [[Download the files from the data core|CaseFile24Deep]]
+* [[Leave the room and run to the exit doors|PodBay]]
+
+
+:: CaseFile24Deep
+<div class="aegis-title">Case File 24: Core Paradox</div>
+<<type 20ms>>THE INCUBATION LOG. AEGIS-1 was built to feed the artifact. It converts raw human psychological fear into physical geometric space. When the station is completely converted, the gate will open.<</type>>
+
+<<if not $evidenceLog.includes("The Incubation Paradox")>>
+  <<run $evidenceLog.push("The Incubation Paradox")>>
+  <span style="color:#00f2ff;"><br>[NEW RECOVERY PACKETS]: Core station paradox logged.</span>
+<</if>>
+
+* [[Run as fast as you can to the Escape Pod Bay|PodBay]]
+
+
+:: PodBay
+<div class="aegis-title">Escape Pod Bay</div>
+<<set $O2 to $O2 - 10>>
+<<if $O2 lte 0>><<goto "GameOver_O2">><</if>>
+
+You punch through a patch of pulsing, skin-like bulkhead wall to hit the emergency launch override switch. A single escape pod sits active inside the launch rails.
+
+<<if $evidenceLog.includes("The Incubation Paradox")>>
+  The console registers your complete logs. You have the total truth about Case File 24 ready to send to Earth.
+  
+  * [[Launch the Escape Pod & Broadcast the Truth|Season1_Climax]]
+<<elseif $evidenceLog.includes("Case File 24: Terror Blueprint")>>
+  You have basic files on the creature, but no definitive answers about the station's purpose.
+  
+  * [[Launch the escape pod blindly|AlternateLaunch]]
+<<else>>
+  The pod controls remain completely locked out by security loops. You haven't extracted enough data files to authorize a solo launch.
+  
+  * [[Attempt to hotwire the pod relays manually|ManualOverrideFail]]
+<</if>>
+
+
+:: ManualOverrideFail
+<div class="aegis-title">Pod Override Failure</div>
+<<set $O2 to 0>>
+You tear open the wiring bundles under the terminal console. A massive short circuit blows the outer pressure seals, venting your remaining breathing air directly out into the space void.
+
+* [[Slip into unconsciousness...|GameOver_O2]]
+
+
+:: AlternateLaunch
+<div class="aegis-title">Escape into the Dark Void</div>
+The pod thrusters slam fire, shooting you out into the deep space vacuum. As you coast away, you watch AEGIS-1 fold in on itself like a piece of paper, turning into a silent black speck.
+
+You survived the shifting station... but you have no real answers. The core entity remains completely unaccounted for.
+
+***
+**END OF SEASON 1: Uncertain Survival Route.**
+* Re-trace your diagnostic files or [[Restart System Framework|Start]].*
+
+
+:: Season1_Climax
+<div class="aegis-title">SEASON 1 FINALE: Transmission Active</div>
+The pod accelerates violently away from the docking ring of AEGIS-1. In your rearview camera deck, the metal plates of the space station warp and split apart, revealing a massive, biological eye that blinks open to stare across the solar system.
+
+You slide your data drive into the pod's long-range communication array. 
+"Broadcasting Case File 24 logs to Earth Command Fleet," the computer voice confirms.
+
+Suddenly, the screen glitches out. The telemetric interface text bleeds into a deep, visceral crimson.
+
+<span class="terminal-rumble critical-alert">A cold, familiar voice scratches through your headset speaker: "Did you truly think they didn't write the blueprint? We have been waiting for your transmission..."</span>
+
+Across your pod glass windows, the distant stars begin to realign themselves, shaping into the unmistakable, terrifying silhouette of **The Mansion**.
+
+<span class="critical-alert terminal-blink" style="font-size: 1.5rem;"><br>TO BE CONTINUED IN SEASON 2</span>
+
+***
+**CONGRATULATIONS: You completed Season 1 with the True Climax Ending.**
+* Your database logs and variables are saved and ready for **AEGIS-2 Terminal**.
+* To check for hidden files or explore different branches, select [[Re-initialize System Framework|Start]].*
+
+
+:: GameOver_O2
+<div class="aegis-title" style="color:#ff3333; border-color:#ff3333;">SYSTEM CRITICAL: LIFE SUPPORT TERMINATED</div>
+Your suit oxygen hit absolute zero. Your lungs burn as you slip onto the freezing deck plates. The station infrastructure ceases to monitor your vitals. 
+
+Before your signals completely drop into absolute flatline, the emergency console forces a standard safety lock:
+
+<span style="color:#ffaa00;" class="terminal-blink">[EMERGENCY COLD PROTOCOL: CRYOSTASIS ENGAGED]</span>
+
+Your timeline has reached a fatal termination loop. History tracking has been wiped. You are forced to reboot the baseline terminal infrastructure.
+
+***
+* [[🚨 RE-INITIALIZE MAIN INFRASTRUCTURE|Start]]
+
+
+:: GameOver_Sanity
+<div class="aegis-title" style="color:#ff3333; border-color:#ff3333;">SYSTEM CRITICAL: COGNITIVE COLLAPSE</div>
+Your internal psychological core has completely bottomed out. The metal terminal walls of AEGIS-1 dissolve from your eyes, replaced permanently by the endless, creaking wooden doors of **The Mansion**. 
+
+You tear off your life-support breathing helmet and walk directly into the shifting illusions, becoming a permanent phantom fragment of the machine's corrupted architecture.
+
+Your timeline has reached a fatal termination loop. History tracking has been wiped. You are forced to reboot the baseline terminal infrastructure.
+
+***
+* [[🚨 RE-INITIALIZE MAIN INFRASTRUCTURE|Start]]
